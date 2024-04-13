@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BaseLibrary;
+namespace BaseLibrary.Entities;
 
 public class BaseEntity
 {

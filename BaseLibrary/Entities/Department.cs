@@ -1,4 +1,4 @@
-﻿namespace BaseLibrary;
+﻿namespace BaseLibrary.Entities;
 
 public class Department : BaseEntity
 {
