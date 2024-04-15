@@ -20,7 +20,7 @@ namespace Server.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(Register user)
+        public async Task<IActionResult> RegisterAsync(Register user)
         {
             if(user is null)
             {
@@ -31,10 +31,18 @@ namespace Server.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(Login user)
+        public async Task<IActionResult> LoginAsync(Login user)
         {
             if(user == null) return BadRequest("Model is empty!");
             var result = await _userAccount.SignInAsync(user);
+            return Ok(result);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshTokenAsync(RefreshToken token)
+        {
+            if(token == null) return BadRequest("Model is empty!");
+            var result = await _userAccount.RefreshTokenAsync(token);
             return Ok(result);
         }
     }
