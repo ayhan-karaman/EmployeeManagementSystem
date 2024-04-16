@@ -115,7 +115,7 @@ namespace ServerLibrary.Repositories.Implementations
                 issuer: _jwtSection.Value.Issuer,
                 audience: _jwtSection.Value.Audience,
                 claims: userClaims,
-                expires:DateTime.Now.AddDays(1),
+                expires:DateTime.Now.AddSeconds(1),
                 signingCredentials: credentials
             );
 
