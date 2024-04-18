@@ -1,15 +1,15 @@
-@page "/identity/account/login"
+@page "/identity/account/register"
 @layout AuthenticationLayout
 
 <div class="container">
-     <div class="row ">
+     <div class="row">
         <div class="col-lg-4"></div>
-         <div class="col-lg-4">
-            <EditForm Enhance Model="User" OnValidSubmit="HandleLogin" >
+         <div class="col-lg-4 my-5">
+            <EditForm Enhance Model="User" OnValidSubmit="HandleRegistration" >
                 <DataAnnotationsValidator />
                 <div class="card" style="background-color: rgba(0, 0, 0, 0.4); margin-top:50%; border-radius:10px; color:white; font-weight:bold;">
-                    <div class="card-header text-center fs-5 mb-2">Login</div>
-                    <div class="container">
+                    <div class="ccard-header text-center fs-5 mb-2">Register</div>
+                     <div class="container">
                         <div class="row">
                             <div class="col-lg-4 col-md-4 col-sm-4"></div>
                             <div class="col-lg-4 col-md-4 col-sm-4 d-flex justify-content-center">
@@ -18,7 +18,11 @@
                             <div class="col-lg-4 col-md-4 col-sm-4"></div>
                         </div>
                     </div>
-                    <div class="card-body" >
+                    <div class="card-body">
+                        <div class="form-group mt-3">
+                            <label for="Email" class="form-label">Full Name</label>
+                            <InputText @bind-Value="User.FullName" class="form-control" />
+                        </div>
                         <div class="form-group mt-3">
                             <label for="Email" class="form-label">Email</label>
                             <InputText @bind-Value="User.Email" class="form-control" />
@@ -28,32 +32,37 @@
                             <input type="password" @bind="User.Password" class="form-control" />
                         </div>
                         <div class="form-group mt-3">
-                            <button class="btn btn-primary fload-end" type="submit">Login</button>
+                            <label for="password" class="form-label">Confirm Password</label>
+                            <input type="password" @bind="User.ConfirmPassword" class="form-control" />
+                        </div>
+                        <div class="form-group mt-3">
+                            <button class="btn btn-primary fload-end" type="submit">Register</button>
                         </div>
                     </div>
                     <div class="card-footer">
                         <span class="text-center">
-                            Don't have account?
-                            <a href="identity/account/register" class="btn-link ">Sign Up</a>
+                            I already have an account
+                            <a href="identity/account/login" class="btn-link">Sign In</a>
                         </span>
                         <ValidationSummary />
                     </div>
                 </div>
             </EditForm>
          </div>
-         <div class="col-lg-4"></div>
+          <div class="col-lg-4"></div>
      </div>
 </div>
-@code{
-    Login User = new();
-    async Task HandleLogin()
+
+@code {
+    Register User = new();
+    async Task HandleRegistration()
     {
-        var result = await accountService.SignInAsync(User);
+        var result = await accountService.CreateAsync(User);
         if(result.Flag)
+            User = new();
+        else
         {
-            var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
-            await customAuthStateProvider.UpdateAuthenticationState(new UserSession(){Token = result.Token, RefreshToken = result.RefreshToken});
-            NavManager.NavigateTo("/", forceLoad:true);
+
         }
     }
 }
