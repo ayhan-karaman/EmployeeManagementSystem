@@ -46,7 +46,7 @@ builder.Services.AddScoped<IUserAccount, UserAccountRepository>();
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowBlazorWasm", 
         builder => builder
-        .WithOrigins("https://localhost:7236", "http://localhost:5161")
+        .WithOrigins("https://super-duper-space-train-vwwvgvrrw97fw647-5161.app.github.dev")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
