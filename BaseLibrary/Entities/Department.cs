@@ -2,5 +2,10 @@
 
 public class Department : BaseEntity
 {
+    // Many to one relationship with General  Department
+    public int GeneralDepartmentId { get; set; }
+    public GeneralDepartment? GeneralDepartment { get; set; }
 
+    // One to many relationship with Branch
+    public ICollection<Branch>? Branches { get; set; }
 }
