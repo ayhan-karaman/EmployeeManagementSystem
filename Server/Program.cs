@@ -1,4 +1,5 @@
 using System.Text;
+using BaseLibrary.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -42,11 +43,18 @@ builder.Services.AddAuthentication(options => {
 });
 
 builder.Services.AddScoped<IUserAccount, UserAccountRepository>();
+builder.Services.AddScoped<IGenericRepository<GeneralDepartment>, GeneralDepartmentRepository>();
+builder.Services.AddScoped<IGenericRepository<Department>, DepartmentRepository>();
+builder.Services.AddScoped<IGenericRepository<Branch>, BranchRepository>();
+
+builder.Services.AddScoped<IGenericRepository<Country>, CountryRepository>();
+builder.Services.AddScoped<IGenericRepository<City>, CityRepository>();
+builder.Services.AddScoped<IGenericRepository<Town>, TownRepository>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowBlazorWasm", 
         builder => builder
-        .WithOrigins("http://localhost:5161")
+        .WithOrigins("https://super-duper-space-train-vwwvgvrrw97fw647-5161.app.github.dev")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()
