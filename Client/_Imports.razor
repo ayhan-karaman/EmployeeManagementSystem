@@ -1,5 +1,6 @@
 ﻿@using System.Net.Http
 @using System.Net.Http.Json
+@using Client.ApplicationStates
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Components.Web
@@ -14,7 +15,40 @@
 @using BaseLibrary.Entities
 @using ClientLibrary.Helpers
 @using ClientLibrary.Services.Contracts
+@using Syncfusion.Blazor.Popups
+@using Client.Pages.ContentPages.DepartmentPages
+@using Client.Pages.OtherPages
+
+
+@* / Navbar tabs communication state handling *@
+@inject AllState allState
 
 @inject AuthenticationStateProvider AuthStateProvider
-@inject IUserAccountService accountService
 @inject NavigationManager NavManager
+
+
+
+@* /Authentication *@
+@inject IUserAccountService accountService
+
+@* /Syncfusion dialog service *@
+@inject SfDialogService dialogService
+
+@* /General Departments / Department  / Branch *@
+@inject IGenericService<GeneralDepartment> generalDepartmentSevice
+@inject IGenericService<Department> departmentService
+@inject IGenericService<Branch> branchService
+
+@* / Country / City / Town *@
+@inject IGenericService<Country> countryService
+@inject IGenericService<City> cityService
+@inject IGenericService<Town> townService
+
+@* / Employee *@
+@inject IGenericService<Employee> employeeService
+
+        using Client.ApplicationStates;
+
+#line default
+#line hidden
+#nullable disable

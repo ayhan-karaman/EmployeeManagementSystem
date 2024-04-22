@@ -1,7 +1,7 @@
 ﻿@page "/nav"
 @using Client.ApplicationStates
 @using Microsoft.AspNetCore.Components.Authorization
-@inject DepartmentState departmentState
+
 
 <AuthorizeView>
     <Authorized>
@@ -59,7 +59,7 @@
                     <div style="margin-left: 5rem; visibility:@DepartmentCssStyle" class="nav-link p-2 text-white">
                         <ul class="list-group">
                             <li style="list-style: none;" class="cusorStyle">
-                                <a @onclick="GeneralDepartmentClicked"  class="nav-link p-2">
+                                <a @onclick="GeneralDepartmentClicked"  class="nav-link p-2" style="cursor:pointer">
                                     <div class="hstack text-wrap">
                                         <span class="bi bi-file-medical fs-5 text-center" aria-hidden="true"
                                             style="margin-top:-2rem"></span>
@@ -68,7 +68,7 @@
                                 </a>
                             </li>
                             <li style="list-style: none;" class="cusorStyle">
-                                <a  class="nav-link p-2">
+                                <a  class="nav-link p-2" style="cursor:pointer">
                                     <div class="hstack">
                                         <span class="bi bi-substack fs-5 text-center" aria-hidden="true"
                                             style="margin-top:-2rem"></span>
@@ -78,7 +78,7 @@
                             </li>
                             <li style="list-style: none;" class="cusorStyle">
 
-                                <a  class="nav-link p-2">
+                                <a  class="nav-link p-2" style="cursor:pointer">
                                     <div class="hstack">
                                         <span class="bi bi-chevron-bar-contract fs-5 text-center" aria-hidden="true"
                                             style="margin-top:-2rem"></span>
@@ -137,6 +137,6 @@
 
     private void GeneralDepartmentClicked()
     {
-        departmentState.GeneralDepartmentClicked();
+        allState.GeneralDepartmentClicked();
     }
 }
