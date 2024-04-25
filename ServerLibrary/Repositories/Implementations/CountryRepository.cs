@@ -34,6 +34,9 @@ namespace ServerLibrary.Repositories.Implementations
 
         public async Task<GeneralResponse> InsertAsync(Country item)
         {
+            var d = await CheckName(item.Name!);
+
+            var k = 0;
             if(!await CheckName(item.Name!)) 
                 return new GeneralResponse(false, "Country already added");
             _appDbContext.Countries.Add(item);
@@ -47,6 +50,10 @@ namespace ServerLibrary.Repositories.Implementations
             var dep = await _appDbContext.Countries.FindAsync(item.Id);
             if(dep == null)
                 return NotFound();
+
+            if(!await CheckName(item.Name!))
+                return new GeneralResponse(false, "Country already added");
+            
             dep.Name = item.Name;
             await Commit();
             return Success();

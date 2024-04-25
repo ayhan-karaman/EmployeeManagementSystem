@@ -1,14 +1,14 @@
 
 @implements IDisposable
-@if(allState.ShowGeneralDepartment)
+@if(allState.ShowCountry)
 {
     <div class="container mt-5">
          <div class="row">
              <div class="col-lg-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="float-start">General Department</h4>
-                        <button class="btn btn-outline-success float-end" @onclick="OpenDialog"><i class="bi bi-plus-circle-dotted"></i> Add Department</button>
+                        <h4 class="float-start">Country</h4>
+                        <button class="btn btn-outline-success float-end" @onclick="OpenDialog"><i class="bi bi-plus-circle-dotted"></i> Add Country</button>
                     </div>
                     <div class="card-header">
                         <div class="card-body">
@@ -17,15 +17,15 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Id</th>
-                                        <th scope="col">General Department</th>
+                                        <th scope="col">Country</th>
                                         <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                  @if(GeneralDepartments is not null)
+                                  @if(Countries is not null)
                                   {
                                      int count = 1;
-                                     @foreach(var item in GeneralDepartments)
+                                     @foreach(var item in Countries)
                                      {
                                         <tr>
                                             <th scope="row">@count</th>
@@ -45,7 +45,7 @@
                                      <tr>
                                         <td colspan="4">
                                             <div class="alert alert-info text-center">
-                                                No General Department added yet!
+                                                No Country added yet!
                                             </div>
                                         </td>
                                      </tr>
@@ -60,7 +60,10 @@
          </div>
     </div>
 }
-<GeneralDepartmentDialog @ref="generalDepartmentDialog"  HandleSaveOperationEvent="HandleSaveOperationEvent" GeneralDepartment="GeneralDepartment" />
+<CountryDialog 
+@ref="countryDialog"  
+HandleSaveOperationEvent="HandleSaveOperationEvent" 
+Country="Country" />
 
 <style>
     #cursorStyle
@@ -71,67 +74,67 @@
 
 @code {
 
-    GeneralDepartmentDialog? generalDepartmentDialog;
-    GeneralDepartment GeneralDepartment = new();
-    public ICollection<GeneralDepartment> GeneralDepartments { get; set; } = new List<GeneralDepartment>();
+    CountryDialog? countryDialog;
+    Country Country = new();
+    public ICollection<Country> Countries { get; set; } = new List<Country>();
     public string Title { get; set; } = "Add";
 
     protected async override Task OnInitializedAsync()
     {
-        await GetGeneralDepartments();
+        await GetCountries();
         allState.Action += StateHasChanged;
     }
 
-    private async Task GetGeneralDepartments()
+    private async Task GetCountries()
     {
-        GeneralDepartments = await generalDepartmentSevice.GetAllAsync(Constants.GeneralDepartmentBaseUrl);
+        Countries = await countryService.GetAllAsync(Constants.CountryBaseUrl);
     }
 
     void OpenDialog()
     {
-        generalDepartmentDialog?.OpenDialog();
+        countryDialog?.OpenDialog();
     }
     public void Dispose()
     {
         allState.Action -= StateHasChanged;
     }
 
-    private async Task HandleSaveOperationEvent(GeneralDepartment generalDepartment)
+    private async Task HandleSaveOperationEvent(Country country)
     {
         bool successCheck = false;
-        if(generalDepartment.Id > 0)
+        if(country.Id > 0)
         {
-            var result = await generalDepartmentSevice.UpdateAsync(generalDepartment, Constants.GeneralDepartmentBaseUrl);
+            var result = await countryService.UpdateAsync(country, Constants.CountryBaseUrl);
             successCheck = await DisplayMessage(result.Flag, result.Message);
         }
         else
         {
-            var response = await generalDepartmentSevice.InsertAsync(generalDepartment, Constants.GeneralDepartmentBaseUrl);
+            var response = await countryService.InsertAsync(country, Constants.CountryBaseUrl);
             successCheck = await DisplayMessage(response.Flag, response.Message);
         }
         if(successCheck)
         {
-            GeneralDepartment = new();
-            await GetGeneralDepartments();
-            generalDepartmentDialog?.ChangeTitle("Add");
+            Country = new();
+            await GetCountries();
+            countryDialog?.ChangeTitle("Add");
 
         }
     }
-    private void EditClicked(GeneralDepartment dep)
+    private void EditClicked(Country dep)
     {
-        generalDepartmentDialog?.ChangeTitle("Update");
-        GeneralDepartment = dep;
+        countryDialog?.ChangeTitle("Update");
+        Country = dep;
         OpenDialog();
     }
 
 
-    private async Task DeleteClicked(GeneralDepartment dep)
+    private async Task DeleteClicked(Country dep)
     {
         bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {dep.Name}?", "Confirm Delete");
         if(!confirm) return;
-        var response = await generalDepartmentSevice.DeleteAsync(dep.Id, Constants.GeneralDepartmentBaseUrl);
+        var response = await countryService.DeleteAsync(dep.Id, Constants.CountryBaseUrl);
         if(await DisplayMessage(response.Flag, response.Message))
-             await GetGeneralDepartments();
+             await GetCountries();
             
     }
     private async Task<bool> DisplayMessage(bool flag, string message)

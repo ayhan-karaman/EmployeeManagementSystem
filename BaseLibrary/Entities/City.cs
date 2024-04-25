@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace BaseLibrary.Entities
 {
     public class City : BaseEntity
@@ -7,6 +9,7 @@ namespace BaseLibrary.Entities
         public Country? Country { get; set; }
 
         // One to many relations with Town 
+        [JsonIgnore]
         public ICollection<Town>? Towns { get; set; }
     }
 }

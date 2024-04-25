@@ -30,7 +30,11 @@ namespace ServerLibrary.Repositories.Implementations
         }
 
         public async Task<ICollection<City>> GetAllAsync()
-        => await _appDbContext.Cities.ToListAsync();
+        => await _appDbContext
+        .Cities
+        .AsNoTracking()
+        .Include(x => x.Country)
+        .ToListAsync();
 
 
         public async Task<City?> GetByIdAsync(int id)

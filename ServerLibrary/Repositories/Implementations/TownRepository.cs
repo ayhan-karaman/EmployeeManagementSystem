@@ -25,7 +25,11 @@ namespace ServerLibrary.Repositories.Implementations
         }
 
         public async Task<ICollection<Town>> GetAllAsync()
-        => await _appDbContext.Towns.ToListAsync();
+        => await _appDbContext
+        .Towns
+        .AsNoTracking()
+        .Include(x => x.City)
+        .ToListAsync();
 
 
         public async Task<Town?> GetByIdAsync(int id)
