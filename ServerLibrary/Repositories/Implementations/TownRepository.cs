@@ -51,6 +51,7 @@ namespace ServerLibrary.Repositories.Implementations
             if(dep == null)
                 return NotFound();
             dep.Name = item.Name;
+            dep.CityId = item.CityId;
             await Commit();
             return Success();
         }

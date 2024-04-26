@@ -12,7 +12,7 @@ using ServerLibrary.Data;
 namespace ServerLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240422115341_Init")]
+    [Migration("20240426195720_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -180,15 +180,11 @@ namespace ServerLibrary.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CiviId")
+                    b.Property<string>("CivilId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FileNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 

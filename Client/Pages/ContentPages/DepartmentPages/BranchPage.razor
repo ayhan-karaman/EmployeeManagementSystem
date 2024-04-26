@@ -97,16 +97,18 @@ Departments="Departments" >
         Departments = await departmentService.GetAllAsync(Constants.DepartmentBaseUrl);
     }
 
-    void AddButtonClicked()
+    async Task AddButtonClicked()
     {
         branchDialog?.ChangeTitle("Add");
         Branch = new();
+        await GetDepartments();
         OpenDialog();
     }
-    void EditClicked(Branch dep)
+    async Task EditClicked(Branch dep)
     {
         branchDialog?.ChangeTitle("Update");
         Branch = dep;
+        await GetDepartments();
         OpenDialog();
     }
 

@@ -18,7 +18,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient<CustomHttpHandler>();
 builder.Services.AddHttpClient("SystemApiClient", client => 
 {
-    client.BaseAddress = new Uri("https://super-duper-space-train-vwwvgvrrw97fw647-7008.app.github.dev/");
+    client.BaseAddress = new Uri("http://localhost:7008/");
 }).AddHttpMessageHandler<CustomHttpHandler>();
 // builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7008/") });
 builder.Services.AddAuthorizationCore();

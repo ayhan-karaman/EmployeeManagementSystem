@@ -5,13 +5,10 @@ namespace BaseLibrary.Entities;
 public class Employee : BaseEntity
 {
     [Required]
-    public string? CiviId { get; set; }
+    public string? CivilId { get; set; }
 
     [Required]
     public string? FileNumber { get; set; }
-
-    [Required]
-    public string? FullName { get; set; }
 
     [Required]
     public string? JobName  { get; set; }

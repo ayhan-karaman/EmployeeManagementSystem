@@ -96,16 +96,18 @@ GeneralDepartments="GeneralDepartments" >
         GeneralDepartments = await generalDepartmentSevice.GetAllAsync(Constants.GeneralDepartmentBaseUrl);
     }
 
-    void AddButtonClicked()
+    async Task AddButtonClicked()
     {
         departmentDialog?.ChangeTitle("Add");
         Department = new();
+        await GetDepartments();
         OpenDialog();
     }
-    void EditClicked(Department dep)
+    async Task EditClicked(Department dep)
     {
         departmentDialog?.ChangeTitle("Update");
         Department = dep;
+        await GetDepartments();
         OpenDialog();
     }
 

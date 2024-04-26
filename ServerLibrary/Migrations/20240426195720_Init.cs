@@ -310,9 +310,8 @@ namespace ServerLibrary.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CiviId = table.Column<string>(type: "text", nullable: false),
+                    CivilId = table.Column<string>(type: "text", nullable: false),
                     FileNumber = table.Column<string>(type: "text", nullable: false),
-                    FullName = table.Column<string>(type: "text", nullable: false),
                     JobName = table.Column<string>(type: "text", nullable: false),
                     Address = table.Column<string>(type: "text", nullable: false),
                     TelephoneNumber = table.Column<string>(type: "text", nullable: false),

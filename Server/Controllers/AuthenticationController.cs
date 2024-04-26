@@ -47,5 +47,35 @@ namespace Server.Controllers
             var result = await _userAccount.RefreshTokenAsync(token);
             return Ok(result);
         }
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var users = await _userAccount.GetUsersAsync();
+            if(users == null) return NotFound();
+            return Ok(users);
+        }
+
+        [HttpPut("update-user")]
+        public async Task<IActionResult> UpdateUserAsync(ManageUser user)
+        {
+            var result = await _userAccount.UpdateUserAsync(user);
+            return Ok(result);
+        }
+
+        [HttpGet("roles")]
+        public async Task<IActionResult> GetRolesAsync()
+        {
+            var roles = await _userAccount.GetSystemRolesAsync();
+            if(roles == null) return NotFound();
+            return Ok(roles);
+        }
+
+        [HttpDelete("delete-user/{id}")]
+        public async Task<IActionResult> DeleteUserAsync(int id)
+        {
+            var result = await _userAccount.DeleteUserAsync(id);
+            return Ok(result);
+        }
     }
 }

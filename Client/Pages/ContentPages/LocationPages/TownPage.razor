@@ -96,16 +96,17 @@ Cities="Cities" >
         Towns = await townService.GetAllAsync(Constants.TownBaseUrl);
     }
 
-    void AddButtonClicked()
+    async Task AddButtonClicked()
     {
         townDialog?.ChangeTitle("Add");
         Town = new();
         OpenDialog();
     }
-    void EditClicked(Town dep)
+    async Task EditClicked(Town dep)
     {
         townDialog?.ChangeTitle("Update");
         Town = dep;
+        await GetCities();
         OpenDialog();
     }
 

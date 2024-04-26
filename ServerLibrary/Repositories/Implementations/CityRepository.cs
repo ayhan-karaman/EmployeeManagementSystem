@@ -56,6 +56,7 @@ namespace ServerLibrary.Repositories.Implementations
             if(dep == null)
                 return NotFound();
             dep.Name = item.Name;
+            dep.CountryId = item.CountryId;
             await Commit();
             return Success();
         }

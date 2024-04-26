@@ -1,6 +1,7 @@
 
 using System.Net.Http.Json;
 using BaseLibrary.DTOs;
+using BaseLibrary.Entities;
 using BaseLibrary.Responses;
 using ClientLibrary.Helpers;
 using ClientLibrary.Services.Contracts;
@@ -39,11 +40,35 @@ namespace ClientLibrary.Services.Implementations
             return await result.Content.ReadFromJsonAsync<LoginResponse>();
         }
 
-        public async Task<WeatherForecast[]> GetWeatherForecastsAsync()
+        public async Task<ICollection<ManageUser>> GetUsersAsync()
         {
-            var httpClient = await _getHttpClient.GetPrivateHttpClient();   
-            var result = await httpClient.GetFromJsonAsync<WeatherForecast[]>($"api/weatherforecast")!;
+            var httpClient = await _getHttpClient.GetPrivateHttpClient();
+            var result = await httpClient.GetFromJsonAsync<ICollection<ManageUser>>($"{AuthUrl}/users");
             return result!;
+        }
+
+        public async Task<GeneralResponse> UpdateUserAsync(ManageUser user)
+        {
+            var httpClient =  _getHttpClient.GetPublicHttpClient();
+            var result = await httpClient.PutAsJsonAsync($"{AuthUrl}/update-user", user);
+            if(!result.IsSuccessStatusCode) return new GeneralResponse(false, "Error occured");
+            return await result.Content.ReadFromJsonAsync<GeneralResponse>();
+        }
+
+        public async Task<ICollection<SystemRole>> GetSystemRolesAsync()
+        {
+            var httpClient = await _getHttpClient.GetPrivateHttpClient();
+            var result = await httpClient.GetFromJsonAsync<ICollection<SystemRole>>($"{AuthUrl}/roles");
+            return result!;
+        }
+
+        public async Task<GeneralResponse> DeleteUserAsync(int id)
+        {
+            var httpClient = await _getHttpClient.GetPrivateHttpClient();
+            var result = await httpClient.DeleteAsync($"{AuthUrl}/delete-user/{id}");
+            if(!result.IsSuccessStatusCode) 
+                return new GeneralResponse(false, "Error occured");
+            return await result.Content.ReadFromJsonAsync<GeneralResponse>();
         }
     }
 }

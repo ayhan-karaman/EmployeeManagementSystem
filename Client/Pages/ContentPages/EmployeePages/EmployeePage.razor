@@ -1,0 +1,175 @@
+@implements IDisposable
+@if(allState.ShowEmployee)
+{
+    if(ShowMainPage)
+    {
+        <div class="container-fluid mt-5">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <button class="btn btn-outline-success" @onclick="ShowAddOrUpdateEmployeeButtonClicked">
+                                <i class="bi bi-plus-circle-dotted"></i> Add Employee
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <SfGrid DataSource="@Employees">
+                                <GridColumns>
+                                    <GridColumn HeaderText="Employee Image">
+                                        <Template>
+                                            @{
+                                                var employee = (context as Employee);
+                                                <div class="image">
+                                                    <img src="@(string.IsNullOrEmpty(employee!.Photo) ? "../Images/Profile/defaultProfileImage.png" : employee!.Photo)" alt="@employee!.Name" width="150" height="150">
+                                                </div>
+                                            }
+                                        </Template>
+                                    </GridColumn>
+                                    <GridColumn Field="@nameof(Employee.CivilId)" HeaderText="Civil ID"></GridColumn>
+                                    <GridColumn Field="@nameof(Employee.FileNumber)" HeaderText="File Number"></GridColumn>
+                                    <GridColumn Field="@nameof(Employee.Name)" HeaderText="Name"></GridColumn>
+                                    <GridColumn Field="@nameof(Employee.TelephoneNumber)" HeaderText="Telephone"></GridColumn>
+                                    <GridColumn Field="@nameof(Employee.JobName)" HeaderText="Job Name"></GridColumn>
+                                    <GridColumn Field="@nameof(Employee.Branch.Name)" HeaderText="Branch"></GridColumn>
+                                    <GridColumn Field="@nameof(Employee.Town.Name)" HeaderText="Town"></GridColumn>
+                                </GridColumns>
+                            </SfGrid>
+                        </div>
+                        <div class="card-footer">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+<AddOrUpdateEmployeePage @ref="addOrUpdateEmployee"
+Employee="Employee"
+ShowAddOrUpdateEmployee="ShowAddOrUpdatePage" 
+NotifyParentFormCloseClicked="NotifyParentFormCloseClicked"
+Countries="DefaultCountries"
+Cities="SelectedCities"
+Towns="SelectedTowns"
+GeneralDepartments="DefaultGeneralDepartments"
+Departments="SelectedDepartments"
+Branches="SelectedBranches"
+HandleCountrySelectEvent="HandleCountrySelectEvent"
+HandleCitySelectEvent="HandleCitySelectEvent"
+HandleGeneralDepartmentSelectEvent="HandleGeneralDepartmentSelectEvent"
+HandleDepartmentSelectEvent="HandleDepartmentSelectEvent"
+HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent" >
+
+</AddOrUpdateEmployeePage>
+@code {
+    AddOrUpdateEmployeePage? addOrUpdateEmployee;
+
+    public ICollection<Employee> Employees { get; set; } = []; //new List<Employee>();
+    public Employee Employee { get; set; } = new();
+
+    // Country / City / Town
+    public ICollection<Country> DefaultCountries { get; set; } = [];
+    public ICollection<City> DefaultCities { get; set; } = [];
+    public ICollection<Town> DefaultTowns { get; set; } = [];
+
+    // General Department / Department / Branch
+    public ICollection<GeneralDepartment> DefaultGeneralDepartments { get; set; } = [];
+    public ICollection<Department> DefaultDepartments { get; set; } = [];
+    public ICollection<Branch> DefaultBranches { get; set; } = [];
+
+
+    public ICollection<Department> SelectedDepartments { get; set; } = [];
+    public ICollection<Branch> SelectedBranches { get; set; } = [];
+    public ICollection<City> SelectedCities { get; set; } = [];
+    public ICollection<Town> SelectedTowns { get; set; } = [];
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        allState.Action += StateHasChanged;
+        await LoadEmployees();
+    }
+
+    // Notify parent when Add or update employee form closes
+    private async Task NotifyParentFormCloseClicked()
+    {
+        ShowMainPage = true;
+        ShowAddOrUpdatePage = false;
+        await LoadEmployees();
+        await LoadDefaults();
+    }
+    private async Task LoadDefaults()
+    {
+        DefaultCountries = await countryService.GetAllAsync(Constants.CountryBaseUrl);
+        DefaultCities = await cityService.GetAllAsync(Constants.CityBaseUrl);
+        DefaultTowns = await townService.GetAllAsync(Constants.TownBaseUrl);
+
+        DefaultGeneralDepartments =  await generalDepartmentSevice.GetAllAsync(Constants.GeneralDepartmentBaseUrl);
+        DefaultDepartments = await departmentService.GetAllAsync(Constants.DepartmentBaseUrl);
+        DefaultBranches = await branchService.GetAllAsync(Constants.BranchBaseUrl);
+    }
+
+    // Country select
+    private void HandleCountrySelectEvent(int countryId)
+    => SelectedCities = DefaultCities.Where(x => x.CountryId == countryId).ToList();
+
+    // City Select
+    private void HandleCitySelectEvent(int cityId)
+    => SelectedTowns = DefaultTowns.Where(x => x.CityId == cityId).ToList();
+
+    // General Department select
+    private void HandleGeneralDepartmentSelectEvent(int generalDepartmentId)
+    => SelectedDepartments = DefaultDepartments.Where(x => x.GeneralDepartmentId == generalDepartmentId).ToList();
+
+    // Department select
+    private void HandleDepartmentSelectEvent(int departmentId)
+    => SelectedBranches = DefaultBranches.Where(x => x.DepartmentId == departmentId).ToList();
+
+    // Load Employees
+    private async Task LoadEmployees()
+    => Employees = await employeeService.GetAllAsync(Constants.EmployeeBaseUrl);
+    
+    // Save Employee
+    async Task HandleSaveEmployeeClickedEvent(Employee employee)
+    {
+        bool successCheck = false;
+        if(employee.Id > 0)
+        {
+            var result = await employeeService.UpdateAsync(employee, Constants.EmployeeBaseUrl);
+            successCheck = await DisplayMessage(result.Flag, result.Message!);
+        }
+        else
+        {
+            var response = await employeeService.InsertAsync(employee, Constants.EmployeeBaseUrl);
+            successCheck = await DisplayMessage(response.Flag, response.Message!);
+        }
+        if(successCheck)
+            addOrUpdateEmployee!.ClearContent();
+        
+    }
+    public bool ShowMainPage { get; set; } = true;
+    public bool ShowAddOrUpdatePage { get; set; } = false;
+    
+    void ShowAddOrUpdateEmployeeButtonClicked()
+    {
+        ShowMainPage = false;
+        ShowAddOrUpdatePage = true;
+    }
+
+    // Display message
+    private async Task<bool> DisplayMessage(bool flag, string message)
+    {
+        if(flag)
+        {
+            await dialogService.AlertAsync(message, "Success Operation");
+            return true;
+        }
+        else
+        {
+            await dialogService.AlertAsync(message, "Alert!");
+            return false;
+        }
+    }
+    public void Dispose() => allState.Action -= StateHasChanged;
+
+}

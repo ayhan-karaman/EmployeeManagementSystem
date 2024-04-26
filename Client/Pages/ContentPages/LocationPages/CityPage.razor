@@ -96,16 +96,18 @@ Countries="Countries" >
         Countries = await countryService.GetAllAsync(Constants.CountryBaseUrl);
     }
 
-    void AddButtonClicked()
+    async Task AddButtonClicked()
     {
         cityDialog?.ChangeTitle("Add");
         City = new();
+        await GetCountries();
         OpenDialog();
     }
-    void EditClicked(City dep)
+    async Task EditClicked(City dep)
     {
         cityDialog?.ChangeTitle("Update");
         City = dep;
+        await GetCountries();
         OpenDialog();
     }
 

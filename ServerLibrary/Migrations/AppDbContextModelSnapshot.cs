@@ -177,15 +177,11 @@ namespace ServerLibrary.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("integer");
 
-                    b.Property<string>("CiviId")
+                    b.Property<string>("CivilId")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("FileNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("text");
 

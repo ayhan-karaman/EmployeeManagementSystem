@@ -50,11 +50,12 @@ builder.Services.AddScoped<IGenericRepository<Branch>, BranchRepository>();
 builder.Services.AddScoped<IGenericRepository<Country>, CountryRepository>();
 builder.Services.AddScoped<IGenericRepository<City>, CityRepository>();
 builder.Services.AddScoped<IGenericRepository<Town>, TownRepository>();
+builder.Services.AddScoped<IGenericRepository<Employee>, EmployeeRepository>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowBlazorWasm", 
         builder => builder
-        .WithOrigins("https://super-duper-space-train-vwwvgvrrw97fw647-5161.app.github.dev")
+        .WithOrigins("http://localhost:5161", "https://localhost:5161")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()

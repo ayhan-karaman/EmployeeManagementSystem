@@ -10,17 +10,19 @@
 @using Client
 @using Client.Layout
 @using Syncfusion.Blazor.DropDowns
-@using Client.Pages.ContentPages.LocationPages
 @using Microsoft.AspNetCore.Components.Authorization
 @using BaseLibrary.DTOs
 @using BaseLibrary.Entities
 @using ClientLibrary.Helpers
 @using ClientLibrary.Services.Contracts
 @using Syncfusion.Blazor.Popups
+
 @using Client.Pages.ContentPages.DepartmentPages
+@using Client.Pages.ContentPages.LocationPages
+@using Client.Pages.ContentPages.UserPages
+@using Client.Pages.ContentPages.EmployeePages
 @using Client.Pages.OtherPages
-
-
+@using Syncfusion.Blazor.Grids
 @* / Navbar tabs communication state handling *@
 @inject AllState allState
 
@@ -48,8 +50,3 @@
 @* / Employee *@
 @inject IGenericService<Employee> employeeService
 
-        using Client.ApplicationStates;
-
-#line default
-#line hidden
-#nullable disable
