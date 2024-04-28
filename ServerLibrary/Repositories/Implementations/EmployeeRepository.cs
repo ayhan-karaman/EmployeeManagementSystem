@@ -1,7 +1,5 @@
 using BaseLibrary.Entities;
 using BaseLibrary.Responses;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using ServerLibrary.Data;
 using ServerLibrary.Repositories.Contracts;
@@ -79,7 +77,7 @@ namespace ServerLibrary.Repositories.Implementations
             findUser.JobName = item.JobName;
             findUser.Photo = item.Photo;
             
-            _appDbContext.Employees.Update(item);
+            _appDbContext.Employees.Update(findUser);
             await Commit();
             return Success();
         }

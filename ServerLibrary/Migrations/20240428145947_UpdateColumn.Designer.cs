@@ -12,8 +12,8 @@ using ServerLibrary.Data;
 namespace ServerLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240426195720_Init")]
-    partial class Init
+    [Migration("20240428145947_UpdateColumn")]
+    partial class UpdateColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,16 +138,11 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CivilId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FieNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("MedicalDiagnose")
                         .IsRequired()
@@ -155,9 +150,6 @@ namespace ServerLibrary.Migrations
 
                     b.Property<string>("MedicalRecommendation")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Other")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -244,19 +236,11 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CivilId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("FieNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Other")
-                        .HasColumnType("text");
 
                     b.Property<int>("OvertimeTypeId")
                         .HasColumnType("integer");
@@ -315,19 +299,11 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CivilId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("FieNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Other")
-                        .HasColumnType("text");
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Punishment")
                         .IsRequired()
@@ -428,19 +404,11 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CivilId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FieNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
 
                     b.Property<int>("NumberOfDays")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Other")
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");

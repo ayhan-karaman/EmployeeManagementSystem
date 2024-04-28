@@ -19,8 +19,8 @@
                                         <Template>
                                             @{
                                                 var employee = (context as Employee);
-                                                <div class="image">
-                                                    <img src="@(string.IsNullOrEmpty(employee!.Photo) ? "../Images/Profile/defaultProfileImage.png" : employee!.Photo)" alt="@employee!.Name" width="150" height="150">
+                                                <div class=" image">
+                                                    <img class="rounded-circle" src="@(string.IsNullOrEmpty(employee!.Photo) ? "../Images/Profile/defaultProfileImage.png" : employee!.Photo)" alt="@employee!.Name" width="80" height="80">
                                                 </div>
                                             }
                                         </Template>
@@ -32,11 +32,19 @@
                                     <GridColumn Field="@nameof(Employee.JobName)" HeaderText="Job Name"></GridColumn>
                                     <GridColumn Field="@nameof(Employee.Branch.Name)" HeaderText="Branch"></GridColumn>
                                     <GridColumn Field="@nameof(Employee.Town.Name)" HeaderText="Town"></GridColumn>
+                                    <GridColumn HeaderText="Menu" HeaderTextAlign="TextAlign.Left">
+                                        <Template>
+                                            @{
+                                                var employee = (context as Employee);
+                                                <i class="bi bi-menu-down text-primary" id="cursorStyle" @onclick="() => ShowMenuPopUp(employee!)"></i>
+                                            }
+                                        </Template>
+                                    </GridColumn>
                                 </GridColumns>
                             </SfGrid>
                         </div>
                         <div class="card-footer">
-
+                           
                         </div>
                     </div>
                 </div>
@@ -45,22 +53,39 @@
     }
 }
 <AddOrUpdateEmployeePage @ref="addOrUpdateEmployee"
-Employee="Employee"
-ShowAddOrUpdateEmployee="ShowAddOrUpdatePage" 
-NotifyParentFormCloseClicked="NotifyParentFormCloseClicked"
-Countries="DefaultCountries"
-Cities="SelectedCities"
-Towns="SelectedTowns"
-GeneralDepartments="DefaultGeneralDepartments"
-Departments="SelectedDepartments"
-Branches="SelectedBranches"
-HandleCountrySelectEvent="HandleCountrySelectEvent"
-HandleCitySelectEvent="HandleCitySelectEvent"
-HandleGeneralDepartmentSelectEvent="HandleGeneralDepartmentSelectEvent"
-HandleDepartmentSelectEvent="HandleDepartmentSelectEvent"
-HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent" >
+    Employee="Employee"
+    ShowAddOrUpdateEmployee="ShowAddOrUpdatePage" 
+    NotifyParentFormCloseClicked="NotifyParentFormCloseClicked"
+    Countries="DefaultCountries"
+    Cities="SelectedCities"
+    Towns="SelectedTowns"
+    GeneralDepartments="DefaultGeneralDepartments"
+    Departments="SelectedDepartments"
+    Branches="SelectedBranches"
+    HandleCountrySelectEvent="HandleCountrySelectEvent"
+    HandleCitySelectEvent="HandleCitySelectEvent"
+    HandleGeneralDepartmentSelectEvent="HandleGeneralDepartmentSelectEvent"
+    HandleDepartmentSelectEvent="HandleDepartmentSelectEvent"
+    HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent" >
 
 </AddOrUpdateEmployeePage>
+
+<EmployeeDetailsPage 
+    EmployeeDetails="Employee"
+    ShowDetailsPage="ShowDetailsPage"
+    HandleDetailsPageCloseBtnClicked="HandleDetailsPageCloseBtnClicked"
+/>
+
+
+<ContextMenu @ref="contextMenu"
+    HandleDeleteClicked="DeleteClicked"
+    HandleEditClicked="EditClicked"
+    HandleViewClicked="ViewClicked"
+    @* HandleAddVacationClicked="AddVacationClicked"
+    HandleAddOvertimeClicked="AddOvertimeClicked"
+    HandleAddSanctionClicked="AddSanctionClicked"
+    HandleAddHealthClicked="AddHealthClicked" *@
+/>
 @code {
     AddOrUpdateEmployeePage? addOrUpdateEmployee;
 
@@ -87,7 +112,9 @@ HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent" >
     protected async override Task OnInitializedAsync()
     {
         allState.Action += StateHasChanged;
+        await LoadDefaults();
         await LoadEmployees();
+
     }
 
     // Notify parent when Add or update employee form closes
@@ -95,6 +122,7 @@ HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent" >
     {
         ShowMainPage = true;
         ShowAddOrUpdatePage = false;
+        SelectedEmployee = new();
         await LoadEmployees();
         await LoadDefaults();
     }
@@ -156,6 +184,86 @@ HandleSaveEmployeeClickedEvent="HandleSaveEmployeeClickedEvent" >
         ShowAddOrUpdatePage = true;
     }
 
+    // Context Menu
+    // Show Menu Pop Up
+    ContextMenu? contextMenu;
+    
+    public Employee SelectedEmployee { get; set; } = new();
+    void ShowMenuPopUp(Employee employee)
+    {
+        SelectedEmployee = employee;
+        contextMenu!.OpenContextMenu();
+    }
+
+    // Edit Clicked
+    private void EditClicked()
+    {
+        // EmployeeGrouping1
+        addOrUpdateEmployee!.Employee.Id = SelectedEmployee.Id;
+        addOrUpdateEmployee!.EmployeeGroup1.Name = SelectedEmployee.Name;
+        addOrUpdateEmployee!.EmployeeGroup1.TelephoneNumber = SelectedEmployee.TelephoneNumber;
+        addOrUpdateEmployee!.EmployeeGroup1.FileNumber = SelectedEmployee.FileNumber;
+        addOrUpdateEmployee!.EmployeeGroup1.Address = SelectedEmployee.Address;
+        addOrUpdateEmployee!.EmployeeGroup1.Photo = SelectedEmployee.Photo;
+        addOrUpdateEmployee!.EmployeeGroup1.CivilId = SelectedEmployee.CivilId;
+
+        // EmployeeGrouping2
+        addOrUpdateEmployee!.EmployeeGroup2.JobName = SelectedEmployee.JobName;
+        addOrUpdateEmployee!.EmployeeGroup2.Other = SelectedEmployee.Other!;
+
+        // General Department / Department / Branch
+        addOrUpdateEmployee!.GeneralDepartment = SelectedEmployee.Branch!.Department!.GeneralDepartment!.Name!;
+        addOrUpdateEmployee!.Department = SelectedEmployee.Branch!.Department!.Name!;
+        addOrUpdateEmployee!.Branch = SelectedEmployee.Branch!.Name!;
+
+        // Country / City / Town
+        addOrUpdateEmployee!.Country = SelectedEmployee.Town!.City!.Country!.Name!;
+        addOrUpdateEmployee!.City = SelectedEmployee.Town!.City!.Name!;
+        addOrUpdateEmployee!.Town = SelectedEmployee.Town!.Name!;
+
+        // Title
+        addOrUpdateEmployee.Title = "Update";
+        SelectedEmployee = new();
+        contextMenu!.CloseContextMenu();
+        ShowAddOrUpdatePage = true;
+        ShowMainPage = false;
+    }
+
+    // Delete Clicked
+    private async Task DeleteClicked()
+    {
+        contextMenu!.CloseContextMenu();
+        bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete {SelectedEmployee.Name}?", "Alert!");
+        if(!confirm) return;
+        var response = await employeeService.DeleteAsync(SelectedEmployee.Id, Constants.EmployeeBaseUrl);
+        var result = await DisplayMessage(response.Flag, response.Message!);
+        if(result)
+        {
+            SelectedEmployee = new();
+            await LoadDefaults();
+            await LoadEmployees();
+        }
+    }
+   
+   // View Clicked
+   public bool ShowDetailsPage { get; set; } = false;
+   private void ViewClicked()
+   {
+        Employee = SelectedEmployee;
+        contextMenu!.CloseContextMenu();
+        ShowDetailsPage = true;
+        ShowMainPage = false;
+        SelectedEmployee = new();
+   }
+   
+
+   // Details Employee Close Btn Clicked
+   private void HandleDetailsPageCloseBtnClicked()
+   {
+        ShowDetailsPage = false;
+        ShowMainPage = true;
+   }
+   
     // Display message
     private async Task<bool> DisplayMessage(bool flag, string message)
     {

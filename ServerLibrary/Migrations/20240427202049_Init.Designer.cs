@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ServerLibrary.Data;
@@ -11,9 +12,11 @@ using ServerLibrary.Data;
 namespace ServerLibrary.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240427202049_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,11 +138,16 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CivilId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("FieNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("MedicalDiagnose")
                         .IsRequired()
@@ -147,6 +155,9 @@ namespace ServerLibrary.Migrations
 
                     b.Property<string>("MedicalRecommendation")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Other")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -233,11 +244,19 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("CivilId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FieNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Other")
+                        .HasColumnType("text");
 
                     b.Property<int>("OvertimeTypeId")
                         .HasColumnType("integer");
@@ -296,11 +315,19 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CivilId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("FieNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Other")
+                        .HasColumnType("text");
 
                     b.Property<string>("Punishment")
                         .IsRequired()
@@ -401,11 +428,19 @@ namespace ServerLibrary.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EmployeeId")
-                        .HasColumnType("integer");
+                    b.Property<string>("CivilId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FieNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("NumberOfDays")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Other")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");

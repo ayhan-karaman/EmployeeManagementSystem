@@ -81,7 +81,7 @@
                                                 <ValidationMessage For="() => EmployeeGroup1.Photo" class="text-danger" />
                                             </div>
                                             <div class="form-group mt-2">
-                                               <button @onclick="NextClicked" type="submit" class="btn btn-primary float-end mt-4 mb-5">
+                                               <button  type="submit" class="btn btn-primary float-end mt-4 mb-5">
                                                 <i class="bi bi-arrow-right"></i>
                                                     Next
                                                </button>
@@ -182,7 +182,7 @@
                                                  <textarea @bind="EmployeeGroup2.Other" placeholder="Optional" class="form-control"></textarea>
                                             </div>
                                             <div class="form-group mt-4 mb-5">
-                                               <button type="submit" class="btn btn-success float-end">
+                                               <button  type="submit" class="btn btn-success float-end">
                                                     <i class="bi bi-save"></i>
                                                     Save
                                                </button>
@@ -313,6 +313,7 @@
         }
     }
 
+    [Parameter] public EventCallback<Employee> HandleSaveEmployeeClickedEvent { get; set; }
     private async Task Form2()
     {
         var isValid  = ValidateEmployeeGroup2();
@@ -336,7 +337,6 @@
     }
 
     // Save Forms 
-    [Parameter] public EventCallback<Employee> HandleSaveEmployeeClickedEvent { get; set; }
     [Parameter] public EventCallback NotifyParentFormCloseClicked { get; set; }
     async Task CloseForm()
     {
@@ -386,7 +386,7 @@
         if(e.File.Name.ToLower().Contains(".png"))
         {
             var format = "image/png";
-            var resizeImage = await e.File.RequestImageFileAsync(format, 300, 300);
+            var resizeImage = await e.File.RequestImageFileAsync(format, 600, 600);
             var buffer = new byte[resizeImage.Size];
             await resizeImage.OpenReadStream().ReadAsync(buffer);
             var imageData = $"data:{format};base64,{Convert.ToBase64String(buffer)}";
