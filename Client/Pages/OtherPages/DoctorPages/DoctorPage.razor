@@ -1,0 +1,110 @@
+@implements IDisposable
+@if(allState.ShowHealth)
+{
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card border-warning shadow-lg">
+                    <div class="card-header"><h4 class="float-start">Healt Information</h4></div>
+                    <div class="card-header" style="max-height: 580px; overflow-x:hidden; overflow-y:scroll;">
+                        <div class="card-body">
+                            @{
+                                var Tool = (new List<string>(){ "Search", "ExcelExport", "PDFExport", "Print"});
+                            }
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<style>
+    #cursorStyle{
+        cursor: pointer;
+    }
+</style>
+<DoctorDialog
+    @ref="doctorDialog"
+    Doctor="Doctor"
+    HandleSaveOperationEvent="HandleSaveOperationEvent"
+/>
+
+@code {
+    private SfGrid<Doctor>? DefaultGrid;
+    DoctorDialog? doctorDialog;
+    Doctor Doctor = new();
+    public ICollection<Doctor> Doctors { get; set; } = new List<Doctor>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        await GetHealth();
+        allState.Action += StateHasChanged;
+    }
+    private async Task GetHealth() => Doctors = await doctorService.GetAllAsync(Constants.DoctorBaseUrl);
+
+    private void AddButtonClicked()
+    {
+        Doctor = new();
+        OpenDialog();
+    }
+
+    private void OpenDialog() => doctorDialog?.OpenDialog();
+
+    private async Task HandleSaveOperationEvent(Doctor doctor)
+    {
+        var result = await doctorService.UpdateAsync(doctor, Constants.DoctorBaseUrl);
+        bool successCheck = await DisplayMessage(result.Flag, result.Message!);
+        if(successCheck)
+        {
+            Doctor = new();
+            await GetHealth();
+        }
+    }
+
+    private void EditClicked(Doctor doctor)
+    {
+        Doctor = doctor;
+        OpenDialog();
+    }
+
+    private async Task DeleteClicked(Doctor doctor)
+    {
+        bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete this?", "Alert!");
+        if(!confirm) 
+            return;
+        var response = await doctorService.DeleteAsync(doctor.Id, Constants.DoctorBaseUrl);
+        var result = await DisplayMessage(response.Flag, response.Message!);
+        if(result)
+        {
+            await GetHealth();
+        }
+    }
+
+
+    // Display Message
+    private async Task<bool> DisplayMessage(bool flag, string message)
+    {
+        if(flag)
+        {
+            await dialogService.AlertAsync(message, "Success Operation");
+            return true;
+        }
+        else
+        {
+            await dialogService.AlertAsync(message, "Alert!");
+            return false;
+        }
+    }
+
+    public void Dispose() => allState.Action -= StateHasChanged;
+
+    // Excel export / PDF export
+    public async Task ToolbaarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if(args.Item.Text == "Excel Export")
+            await this.DefaultGrid!.ExcelExport()!;
+        if(args.Item.Text == "PDF Export")
+            await this.DefaultGrid!.PdfExport()!;
+    }
+}

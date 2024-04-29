@@ -77,6 +77,15 @@ namespace Client.ApplicationStates
             ShowEmployee = true;
             Action?.Invoke();
         }
+
+
+        public bool ShowHealth { get; set;}
+        public void HealthClicked()
+        {
+            ResetAllDepartments();
+            ShowHealth = true;
+            Action?.Invoke();
+        }
         public void ResetAllDepartments()
         {
             ShowGeneralDepartment = false;
@@ -87,6 +96,7 @@ namespace Client.ApplicationStates
             ShowTown = false;
             ShowUser = false;
             ShowEmployee = false;  
+            ShowHealth = false;
         }
     }
 }

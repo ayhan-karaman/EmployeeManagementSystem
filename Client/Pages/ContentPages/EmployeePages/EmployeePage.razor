@@ -81,11 +81,12 @@
     HandleDeleteClicked="DeleteClicked"
     HandleEditClicked="EditClicked"
     HandleViewClicked="ViewClicked"
-    @* HandleAddVacationClicked="AddVacationClicked"
-    HandleAddOvertimeClicked="AddOvertimeClicked"
+     HandleAddVacationClicked="AddVacationClicked"
+    @*HandleAddOvertimeClicked="AddOvertimeClicked"
     HandleAddSanctionClicked="AddSanctionClicked"
     HandleAddHealthClicked="AddHealthClicked" *@
 />
+<DoctorDialog @ref="doctorDialog" Doctor="Doctor" HandleSaveOperationEvent="SaveHealthEvent" />
 @code {
     AddOrUpdateEmployeePage? addOrUpdateEmployee;
 
@@ -126,6 +127,7 @@
         await LoadEmployees();
         await LoadDefaults();
     }
+    
     private async Task LoadDefaults()
     {
         DefaultCountries = await countryService.GetAllAsync(Constants.CountryBaseUrl);
@@ -256,6 +258,29 @@
         SelectedEmployee = new();
    }
    
+    DoctorDialog? doctorDialog;
+    Doctor Doctor = new();
+    // Add Health clicked
+    private void AddVacationClicked()
+    {
+        Doctor.EmployeeId = SelectedEmployee.Id;
+        contextMenu!.CloseContextMenu();
+        doctorDialog!.CloseDialog();
+    }
+    // Save Health Handler
+    public async Task SaveHealthEvent(Doctor item)
+    {
+        item.EmployeeId = SelectedEmployee.Id;
+        var (flag, message) = await doctorService.InsertAsync(item, Constants.DoctorBaseUrl);
+        var response = await DisplayMessage(flag, message!);
+        if(response)
+        {
+            SelectedEmployee = new();
+            Doctor = new();
+            doctorDialog!.CloseDialog();
+        }
+
+    }
 
    // Details Employee Close Btn Clicked
    private void HandleDetailsPageCloseBtnClicked()

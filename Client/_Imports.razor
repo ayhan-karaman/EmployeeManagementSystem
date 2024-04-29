@@ -22,6 +22,7 @@
 @using Client.Pages.ContentPages.UserPages
 @using Client.Pages.ContentPages.EmployeePages
 @using Client.Pages.OtherPages
+@using Client.Pages.OtherPages.DoctorPages
 @using Syncfusion.Blazor.Grids
 @* / Navbar tabs communication state handling *@
 @inject AllState allState
@@ -46,6 +47,18 @@
 @inject IGenericService<Country> countryService
 @inject IGenericService<City> cityService
 @inject IGenericService<Town> townService
+
+
+@* / Doctor / Overtime / Sanction / Vacation *@
+@inject IGenericService<Doctor> doctorService
+@inject IGenericService<Overtime> overtimeService
+@inject IGenericService<Sanction> sanctionService
+@inject IGenericService<Vacation> vacationService
+
+@* / Overtime Type / Sanction Type / Vacation Type *@
+@inject IGenericService<OvertimeType> overtimeTypeService
+@inject IGenericService<SanctionType> sanctionTypeService
+@inject IGenericService<VacationType> vacationTypeService
 
 @* / Employee *@
 @inject IGenericService<Employee> employeeService
