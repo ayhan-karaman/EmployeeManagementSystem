@@ -11,7 +11,27 @@
                             @{
                                 var Tool = (new List<string>(){ "Search", "ExcelExport", "PDFExport", "Print"});
                             }
-                            
+                            <SfGrid DataSource="@Doctors" AllowPaging="true" AllowSorting="true" Toolbar="@Tool" AllowExcelExport="true" @ref="DefaultGrid" AllowPdfExport="true"  >
+                                <GridPageSettings PageSize="5"></GridPageSettings>
+                                <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="Doctor"></GridEvents>
+                                <GridColumns>
+                                    <GridColumn Field="@nameof(Doctor.EmployeeId)" HeaderText="ID"></GridColumn>
+                                    <GridColumn Field="@nameof(Doctor.MedicalDiagnose)" HeaderText="Medical Diagnose"></GridColumn>
+                                    <GridColumn Field="@nameof(Doctor.MedicalRecommendation)" HeaderText="Medical Recommendation"></GridColumn>
+                                    <GridColumn Field="@nameof(Doctor.Date)" HeaderText="Date"></GridColumn>
+                                    <GridColumn HeaderText="Action">
+                                        <Template>
+                                            @{
+                                                var doctor = (context as Doctor);
+                                            }
+                                            <div>
+                                                <i class="bi bi-pencil text-info" id="cursorStyle" @onclick="() => EditClicked(doctor!)" ></i>
+                                                <i class="bi bi-trash text-danger" id="cursorStyle" @onclick="() => DeleteClicked(doctor!)" ></i>
+                                            </div>
+                                        </Template>
+                                    </GridColumn>
+                                </GridColumns>
+                            </SfGrid>
                         </div>
                     </div>
                 </div>
@@ -100,7 +120,7 @@
     public void Dispose() => allState.Action -= StateHasChanged;
 
     // Excel export / PDF export
-    public async Task ToolbaarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
     {
         if(args.Item.Text == "Excel Export")
             await this.DefaultGrid!.ExcelExport()!;

@@ -1,0 +1,43 @@
+<SfDialog Width="350px" IsModal="true" ShowCloseIcon="true" @bind-Visible="IsVisible" >
+    <DialogEvents OnOpen="OpenDialog"></DialogEvents>
+    <DialogTemplates>
+         <Header>@Title Sanction Type</Header>
+         <Content>
+             <EditForm Model="SanctionType" Enhance OnSubmit="Save">
+                <div class="card border-success">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input @bind-value="SanctionType.Name" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+             </EditForm>
+         </Content>
+    </DialogTemplates>
+    <DialogButtons>
+        <DialogButton  Content="SAVE" Type="ButtonType.Submit" IsPrimary="true" OnClick="Save" />
+    </DialogButtons>
+</SfDialog>
+
+@code {
+     public bool IsVisible { get; set; } = false;
+     public string Title { get; set; } = "Add";
+     [Parameter] public SanctionType SanctionType { get; set; } = new();
+     [Parameter] public EventCallback<SanctionType> HandleSaveOperationEvent { get; set; }
+     private async Task Save()
+    {
+
+        if(string.IsNullOrEmpty(SanctionType.Name))
+            await dialogService.AlertAsync("You need to provide Overtime Type name.", "Alert!");
+        else
+            await HandleSaveOperationEvent.InvokeAsync(SanctionType);
+    }
+     public void OpenDialog()
+     {
+        IsVisible = true;
+        StateHasChanged();
+     }
+
+     public void ChangeTitle(string title) => Title = title;
+}
