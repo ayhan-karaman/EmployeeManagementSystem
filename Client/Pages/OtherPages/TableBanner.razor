@@ -1,46 +1,88 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-2 cursorStyle">
+        <div class="col-lg-2">
             <div class="card border-primary">
-                <div class="card-header">
-                    <i class="bi bi-people text-primary"></i>Employees
+                <div  class="card-header d-flex justify-content-center align-items-center">
+                    <i class="bi bi-people text-primary mx-1"></i>Employees
+                    <span class="badge bg-primary mx-1"> @Employees.Count </span>
                 </div>
             </div>
         </div>
         <div class="col-lg-2 cursorStyle">
-            <div class="card border-success">
+            <div class="card border-success"  @onclick="VacationClicked">
                 <div class="card-header">
                     <i class="bi bi-backpack3 text-success"></i>Vacation
+                    <span class="badge bg-success"> @Vacations.Count </span>
                 </div>
             </div>
         </div>
         <div class="col-lg-2 cursorStyle">
-            <div class="card border-danger">
+            <div class="card border-danger" @onclick="OvertimeClicked">
                 <div class="card-header">
                     <i class="bi bi-stopwatch text-danger"></i>Overtime
+                    <span class="badge bg-danger"> @Overtimes.Count </span>
                 </div>
             </div>
         </div>
         <div class="col-lg-2 cursorStyle">
-            <div class="card border-warning">
+            <div class="card border-warning" @onclick="HealthClicked">
                 <div class="card-header">
-                    <i class="bi bi-hospital text-warning"></i>Doctor
+                    <i class="bi bi-hospital text-warning"></i>Health
+                    <span class="badge bg-warning"> @Health.Count </span>
                 </div>
             </div>
         </div>
         <div class="col-lg-2 cursorStyle">
-            <div class="card border-info">
+            <div class="card border-info" @onclick="SanctionClicked">
                 <div class="card-header">
                     <i class="bi bi-x-octagon text-info"></i>Sanctions
+                    <span class="badge bg-info "> @Sanctions.Count </span>
                 </div>               
             </div>
         </div>
-        <div class="col-lg-2 cursorStyle">
+        <div class="col-lg-2">
             <div class="card border-primary">
-                <div class="card-header">
-                    <i class="bi bi-slack text-dark"></i>Departments
+                <div class="card-header d-flex justify-content-center align-items-center">
+                    <i class="bi bi-slack text-dark mx-1"></i>Departments
+                    <span class="badge bg-dark mx-1">@Departments.Count</span>
                 </div>       
             </div>
         </div>
     </div>
 </div>
+<style>
+    .cursorStyle{
+        cursor: pointer;
+    }
+</style>
+@code {
+    public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+    public ICollection<Department> Departments { get; set; } = new List<Department>();
+    public ICollection<Overtime> Overtimes { get; set; } = new List<Overtime>();
+    public ICollection<Sanction> Sanctions { get; set; } = new List<Sanction>();
+    public ICollection<Vacation> Vacations { get; set; } = new List<Vacation>();
+    public ICollection<Doctor> Health { get; set; } = new List<Doctor>();
+    
+    protected async override Task OnInitializedAsync()
+    {
+        allState.Action += StateHasChanged;
+        await LoadDefaults();
+    }
+
+    private async Task LoadDefaults()
+    {
+        Employees = await employeeService.GetAllAsync(Constants.EmployeeBaseUrl);
+        Departments = await departmentService.GetAllAsync(Constants.DepartmentBaseUrl);
+        Overtimes = await overtimeService.GetAllAsync(Constants.OvertimeBaseUrl);
+        Sanctions  = await sanctionService.GetAllAsync(Constants.SanctionBaseUrl);
+        Vacations = await vacationService.GetAllAsync(Constants.VacationBaseUrl);
+        Health = await doctorService.GetAllAsync(Constants.DoctorBaseUrl);
+    }
+
+    private void HealthClicked() => allState.HealthClicked();
+    private void OvertimeClicked() => allState.OvertimeClicked();
+    private void SanctionClicked() => allState.SanctionClicked();
+    private void VacationClicked() => allState.VacationClicked();
+
+    public void Dispose() => allState.Action -= StateHasChanged;
+}

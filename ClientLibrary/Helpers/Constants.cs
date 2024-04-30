@@ -11,7 +11,7 @@ namespace ClientLibrary.Helpers
         public const string EmployeeBaseUrl = "api/employee";
         public const string DoctorBaseUrl = "api/doctor";
         public const string OvertimeBaseUrl = "api/overtime";
-        public const string OvertimeTypeBaseUrl = "api/overtimetype";
+        public const string OvertimeTypeBaseUrl = "api/OvertimeType";
         public const string SanctionBaseUrl = "api/sanction";
         public const string SanctionTypeBaseUrl = "api/sanctiontype";
         public const string VacationBaseUrl = "api/vacation";

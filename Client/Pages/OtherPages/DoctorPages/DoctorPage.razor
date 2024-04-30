@@ -9,7 +9,7 @@
                     <div class="card-header" style="max-height: 580px; overflow-x:hidden; overflow-y:scroll;">
                         <div class="card-body">
                             @{
-                                var Tool = (new List<string>(){ "Search", "ExcelExport", "PDFExport", "Print"});
+                                var Tool = (new List<string>(){ "Search", "ExcelExport", "PdfExport", "Print"});
                             }
                             <SfGrid DataSource="@Doctors" AllowPaging="true" AllowSorting="true" Toolbar="@Tool" AllowExcelExport="true" @ref="DefaultGrid" AllowPdfExport="true"  >
                                 <GridPageSettings PageSize="5"></GridPageSettings>

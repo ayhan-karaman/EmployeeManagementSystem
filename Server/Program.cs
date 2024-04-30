@@ -21,9 +21,10 @@ builder.Services.Configure<JwtSection>(builder.Configuration.GetSection("JwtSect
 var jwtSection = builder.Configuration.GetSection(nameof(JwtSection)).Get<JwtSection>();
 // Starting
 builder.Services.AddDbContext<AppDbContext>(options => {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")?? 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ?? 
     throw new InvalidOperationException("Sorry, your connection is not found!"));
 });
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddAuthentication(options => {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -68,7 +69,7 @@ builder.Services.AddScoped<IGenericRepository<VacationType>, VacationTypeReposit
 builder.Services.AddCors(options => {
     options.AddPolicy("AllowBlazorWasm", 
         builder => builder
-        .WithOrigins("https://super-duper-space-train-vwwvgvrrw97fw647-5161.app.github.dev")
+        .WithOrigins("http://localhost:5161", "https://localhost:5161")
         .AllowAnyMethod()
         .AllowAnyHeader()
         .AllowCredentials()

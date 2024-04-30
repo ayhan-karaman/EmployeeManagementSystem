@@ -82,7 +82,7 @@
         await GetTypes();
         allState.Action += StateHasChanged;
     }
-    private async Task GetTypes() => await overtimeService.GetAllAsync(Constants.OvertimeTypeBaseUrl);
+    private async Task GetTypes() => Types =  await overtimeTypeService.GetAllAsync(Constants.OvertimeTypeBaseUrl);
     void OpenDialog() => overtimeTypeDialog!.OpenDialog();
     async Task EditClicked(OvertimeType item)
     {

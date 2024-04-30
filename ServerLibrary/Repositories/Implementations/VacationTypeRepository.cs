@@ -20,6 +20,7 @@ namespace ServerLibrary.Repositories.Implementations
             var item = await _appDbContext.VacationTypes.FindAsync(id);
             if (item == null) return NotFound();
             _appDbContext.VacationTypes.Remove(item);
+            await Commit();
             return Success();
         }
 
@@ -34,6 +35,7 @@ namespace ServerLibrary.Repositories.Implementations
             if(!await CheckName(item.Name!))
                 return new GeneralResponse(false, "Vacation Type allready added");
             await _appDbContext.VacationTypes.AddAsync(item);
+            await Commit();
             return Success();
         }
 

@@ -8,7 +8,19 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label class="form-label">Employee ID</label>
-                            <input @bind="Sanction!.EmployeeId" class="form-control" disabled>
+                            <input @bind="Sanction!.EmployeeId" class="form-control" disabled />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">Ocurring Date</label>
+                            <InputDate @bind-Value="Sanction!.Date" class="form-control"  />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">Punishment Date</label>
+                            <InputDate @bind-Value="Sanction!.PunishmentDate" class="form-control"  />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">Punishment</label>
+                            <InputTextArea @bind-Value="Sanction!.Punishment" class="form-control"  />
                         </div>
                         <div class="form-group mt-3 mb-3">
                             <label class="form-label">Select Type</label>
@@ -39,10 +51,11 @@
     </DialogButtons>
 </SfDialog>
 @code {
-        [Parameter] public string Title { get; set; } = "Add";
         [Parameter] public Sanction? Sanction { get; set; } = new();
-        [Parameter] public List<SanctionType> SanctionTypes { get; set; } = new();
+        [Parameter] public ICollection<SanctionType> SanctionTypes { get; set; } = new List<SanctionType>();
         [Parameter] public EventCallback<Sanction> HandleSaveOperationEvent { get; set; }
+            
+        public string Title { get; set; } = "Add";
         public bool IsVisible { get; set; } = false;
         private async Task Save()
         {

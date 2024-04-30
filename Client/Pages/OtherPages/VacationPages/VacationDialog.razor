@@ -8,7 +8,19 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label class="form-label">Employee ID</label>
-                            <input @bind="Vacation!.EmployeeId" class="form-control" disabled>
+                            <input  @bind="Vacation!.EmployeeId" class="form-control" disabled />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">Start Date</label>
+                            <InputDate default-Value="01.01.2023"  @bind-Value="Vacation!.StartDate" class="form-control" />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">ENumber Of Days</label>
+                            <InputNumber @bind-Value="Vacation!.NumberOfDays" class="form-control" />
+                        </div>
+                        <div class="form-group mt-2">
+                            <label class="form-label">End Date</label>
+                            <input type="text" Value="@Vacation!.EndDate" class="form-control" disabled />
                         </div>
                          <div class="form-group mt-3 mb-3">
                             <label class="form-label">Select Type</label>
@@ -39,9 +51,9 @@
     </DialogButtons>
 </SfDialog>
 @code {
-        [Parameter] public string Title { get; set; } = "Add";
+        public string Title { get; set; } = "Add";
         [Parameter] public Vacation? Vacation { get; set; } = new();
-        [Parameter] public List<VacationType> VacationTypes { get; set; } = new();
+        [Parameter] public ICollection<VacationType> VacationTypes { get; set; } = new List<VacationType>();
         [Parameter] public EventCallback<Vacation> HandleSaveOperationEvent { get; set; }
         public bool IsVisible { get; set; } = false;
         private async Task Save()

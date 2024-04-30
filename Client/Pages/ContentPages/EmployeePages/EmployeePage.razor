@@ -13,7 +13,14 @@
                             </button>
                         </div>
                         <div class="card-body">
-                            <SfGrid DataSource="@Employees">
+                            @{
+                                var Tool = (new List<string>(){ "Search", "ExcelExport", "PdfExport", "Print"});
+                            }
+                            <SfGrid DataSource="@Employees"
+                            AllowPaging="true" AllowSorting="true" 
+                            Toolbar="@Tool" AllowExcelExport="true" @ref="DefaultGrid" AllowPdfExport="true" >
+                            <GridPageSettings PageSize="5"></GridPageSettings>
+                            <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="Employee"></GridEvents>
                                 <GridColumns>
                                     <GridColumn HeaderText="Employee Image">
                                         <Template>
@@ -109,7 +116,7 @@
 
 @code {
     AddOrUpdateEmployeePage? addOrUpdateEmployee;
-
+    private SfGrid<Employee>? DefaultGrid;
     public ICollection<Employee> Employees { get; set; } = []; //new List<Employee>();
     public Employee Employee { get; set; } = new();
 
@@ -283,7 +290,7 @@
     {
         Doctor.EmployeeId = SelectedEmployee.Id;
         contextMenu!.CloseContextMenu();
-        doctorDialog!.CloseDialog();
+        doctorDialog?.OpenDialog();
     }
 
     // Save Health Handler
@@ -305,10 +312,11 @@
     //AddOvertimeClicked
     OvertimeDialog? overtimeDialog;
     Overtime Overtime = new();
-    List<OvertimeType> OvertimeTypes = new();
-   private void AddOvertimeClicked()
+    ICollection<OvertimeType> OvertimeTypes = [];
+   private async Task AddOvertimeClicked()
    {
       Overtime.EmployeeId = SelectedEmployee.Id;
+      OvertimeTypes = await overtimeTypeService.GetAllAsync(Constants.OvertimeTypeBaseUrl);
       contextMenu!.CloseContextMenu();
       overtimeDialog!.OpenDialog();
    }
@@ -330,10 +338,11 @@
    // Add Sanction Clicked
    SanctionDialog? sanctionDialog;
    Sanction Sanction = new();
-   List<SanctionType> SanctionTypes = [];
-   private void AddSanctionClicked()
+   ICollection<SanctionType> SanctionTypes = [];
+   private async Task AddSanctionClicked()
    {
         Sanction.EmployeeId = SelectedEmployee.Id;
+        SanctionTypes = await sanctionTypeService.GetAllAsync(Constants.SanctionTypeBaseUrl);
         contextMenu!.CloseContextMenu();
         sanctionDialog!.OpenDialog();
    }
@@ -354,10 +363,11 @@
    // Add Vacation clicked
    VacationDialog? vacationDialog;
    Vacation Vacation = new();
-   List<VacationType> VacationTypes = [];
-   private void AddVacationClicked()
+   ICollection<VacationType> VacationTypes = [];
+   private async Task AddVacationClicked()
    {
         Vacation.EmployeeId = SelectedEmployee.Id;
+        VacationTypes = await vacationTypeService.GetAllAsync(Constants.VacationTypeBaseUrl);
         contextMenu!.CloseContextMenu();
         vacationDialog!.OpenDialog();
    }
@@ -398,6 +408,13 @@
             await dialogService.AlertAsync(message, "Alert!");
             return false;
         }
+    }
+    public async Task ToolbarClickHandler(Syncfusion.Blazor.Navigations.ClickEventArgs args)
+    {
+        if(args.Item.Text == "Excel Export")
+            await this.DefaultGrid!.ExcelExport()!;
+        if(args.Item.Text == "PDF Export")
+            await this.DefaultGrid!.PdfExport()!;
     }
     public void Dispose() => allState.Action -= StateHasChanged;
 

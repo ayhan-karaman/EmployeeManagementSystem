@@ -8,15 +8,15 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label class="form-label">Employee ID</label>
-                            <input @bind="Overtime!.EmployeeId" class="form-control" disabled />
+                            <input @bind="Overtime.EmployeeId" class="form-control" disabled />
                         </div>
                         <div class="form-group mt-2">
                             <label class="form-label">Start Date</label>
-                            <InputDate @bind-Value="Overtime!.StartDate" class="form-control" />
+                            <InputDate @bind-Value="Overtime.StartDate" class="form-control" />
                         </div>
                         <div class="form-group mt-2">
                             <label class="form-label">End Date</label>
-                            <InputDate @bind-Value="Overtime!.EndDate" class="form-control" />
+                            <InputDate @bind-Value="Overtime.EndDate" class="form-control" />
                         </div>
                         <div class="form-group mt-2">
                             <label class="form-label">Number Of Days</label>
@@ -52,8 +52,8 @@
 </SfDialog>
 @code {
         [Parameter] public string Title { get; set; } = "Add";
-        [Parameter] public Overtime? Overtime { get; set; } = new();
-        [Parameter] public List<OvertimeType> OvertimeTypes { get; set; } = new List<OvertimeType>();
+        [Parameter] public Overtime Overtime { get; set; } = new();
+        [Parameter] public ICollection<OvertimeType> OvertimeTypes { get; set; } = new List<OvertimeType>();
         [Parameter] public EventCallback<Overtime> HandleSaveOperationEvent { get; set; }
         public bool IsVisible { get; set; } = false;
         private async Task Save()

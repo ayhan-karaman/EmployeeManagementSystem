@@ -18,7 +18,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddTransient<CustomHttpHandler>();
 builder.Services.AddHttpClient("SystemApiClient", client => 
 {
-    client.BaseAddress = new Uri("https://super-duper-space-train-vwwvgvrrw97fw647-7008.app.github.dev/");
+    client.BaseAddress = new Uri("http://localhost:7008/");
 }).AddHttpMessageHandler<CustomHttpHandler>();
 // builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7008/") });
 builder.Services.AddAuthorizationCore();
@@ -37,6 +37,18 @@ builder.Services.AddScoped<IGenericService<Branch>, GenericService<Branch>>();
 builder.Services.AddScoped<IGenericService<Country>, GenericService<Country>>();
 builder.Services.AddScoped<IGenericService<City>, GenericService<City>>();
 builder.Services.AddScoped<IGenericService<Town>, GenericService<Town>>();
+
+builder.Services.AddScoped<IGenericService<Doctor>, GenericService<Doctor>>();
+builder.Services.AddScoped<IGenericService<Overtime>, GenericService<Overtime>>();
+builder.Services.AddScoped<IGenericService<Sanction>, GenericService<Sanction>>();
+builder.Services.AddScoped<IGenericService<Vacation>, GenericService<Vacation>>();
+
+
+builder.Services.AddScoped<IGenericService<OvertimeType>, GenericService<OvertimeType>>();
+builder.Services.AddScoped<IGenericService<SanctionType>, GenericService<SanctionType>>();
+builder.Services.AddScoped<IGenericService<VacationType>, GenericService<VacationType>>();
+
+
 
 // Employee
 builder.Services.AddScoped<IGenericService<Employee>, GenericService<Employee>>();

@@ -1,44 +1,45 @@
 @implements IDisposable
-@if(allState.ShowOvertime)
+
+@if(allState.ShowSanction)
 {
     <div class="container mt-5">
         <div class="row">
             <div class="col-lg-12">
                 <div class="card border-warning shadow-lg">
-                    <div class="card-header"><h4 class="float-start">Manage Employees Overtime</h4></div>
+                    <div class="card-header"><h4 class="float-start">Manage Employees Sanction</h4></div>
                     <div class="card-header" style="max-height: 580px; overflow-x:hidden; overflow-y:scroll;">
                         <div class="card-body">
                             @{
                                 var Tool = (new List<string>(){ "Search", "ExcelExport", "PdfExport", "Print"});
                             }
-                            <SfGrid DataSource="@Overtimes" AllowPaging="true" AllowSorting="true" 
+                            <SfGrid DataSource="@Sanctions" AllowPaging="true" AllowSorting="true" 
                             Toolbar="@Tool" AllowExcelExport="true" @ref="DefaultGrid" AllowPdfExport="true"  >
                                 <GridPageSettings PageSize="5"></GridPageSettings>
-                                <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="Overtime"></GridEvents>
+                                <GridEvents OnToolbarClick="ToolbarClickHandler" TValue="Sanction"></GridEvents>
                                 <GridColumns>
-                                    <GridColumn Field="@nameof(Overtime.EmployeeId)" HeaderText="ID"></GridColumn>
+                                    <GridColumn Field="@nameof(Sanction.EmployeeId)" HeaderText="ID"></GridColumn>
                                     <GridColumn HeaderText="Type">
                                         <Template>
                                             @{
-                                                var overtime = (context as Overtime);
+                                                var item = (context as Sanction);
                                             }
                                             <div>
-                                                @overtime!.OvertimeType!.Name
+                                                @item!.SanctionType!.Name
                                             </div>
                                         </Template>
                                     </GridColumn>
-                                    <GridColumn Field="@nameof(Overtime.StartDate)" HeaderText="Start Date"></GridColumn>
-                                    <GridColumn Field="@nameof(Overtime.EndDate)" HeaderText="End Date"></GridColumn>
-                                    <GridColumn Field="@nameof(Overtime.NumberOfDays)" HeaderText="Number of Days"></GridColumn>
+                                    <GridColumn Field="@nameof(Sanction.Date)" HeaderText="Occuring Date"></GridColumn>
+                                    <GridColumn Field="@nameof(Sanction.Punishment)" HeaderText="Punishment"></GridColumn>
+                                    <GridColumn Field="@nameof(Sanction.PunishmentDate)" HeaderText="Punishment Date"></GridColumn>
                                     
                                     <GridColumn HeaderText="Action">
                                         <Template>
                                             @{
-                                                var overtime = (context as Overtime);
+                                                var item = (context as Sanction);
                                             }
                                             <div>
-                                                <i class="bi bi-pencil text-info" id="cursorStyle" @onclick="() => EditClicked(overtime!)" ></i>
-                                                <i class="bi bi-trash text-danger" id="cursorStyle" @onclick="() => DeleteClicked(overtime!)" ></i>
+                                                <i class="bi bi-pencil text-info" id="cursorStyle" @onclick="() => EditClicked(item!)" ></i>
+                                                <i class="bi bi-trash text-danger" id="cursorStyle" @onclick="() => DeleteClicked(item!)" ></i>
                                             </div>
                                         </Template>
                                     </GridColumn>
@@ -52,57 +53,57 @@
     </div>
 }
 
-<OvertimeDialog 
-    @ref="overtimeDialog"
-    Overtime="Overtime"
-    OvertimeTypes="OvertimeTypes"
+<SanctionDialog 
+    @ref="sanctionDialog"
+    Sanction="Sanction"
+    SanctionTypes="SanctionTypes"
     HandleSaveOperationEvent="HandleSaveOperationEvent"
 />
 @code {
-    private SfGrid<Overtime>? DefaultGrid;
-    OvertimeDialog? overtimeDialog;
-    Overtime Overtime = new();
-    public ICollection<Overtime> Overtimes { get; set; } = new List<Overtime>();
-    public ICollection<OvertimeType> OvertimeTypes { get; set; } = new List<OvertimeType>();
+    private SfGrid<Sanction>? DefaultGrid;
+    SanctionDialog? sanctionDialog;
+    Sanction Sanction = new();
+    public ICollection<Sanction> Sanctions { get; set; } = new List<Sanction>();
+    public ICollection<SanctionType> SanctionTypes { get; set; } = new List<SanctionType>();
 
     protected async override Task OnInitializedAsync()
     {
         await GetTypes();
-        await GetOvertimes();
+        await GetSanctions();
         allState.Action += StateHasChanged;
     }
 
-    private async Task GetTypes() => OvertimeTypes =  await overtimeTypeService.GetAllAsync(Constants.OvertimeTypeBaseUrl);
-    private async Task GetOvertimes() => Overtimes =  await overtimeService.GetAllAsync(Constants.OvertimeBaseUrl);
+    private async Task GetTypes() => SanctionTypes =  await sanctionTypeService.GetAllAsync(Constants.SanctionTypeBaseUrl);
+    private async Task GetSanctions() => Sanctions =  await sanctionService.GetAllAsync(Constants.SanctionBaseUrl);
 
-    private async Task HandleSaveOperationEvent(Overtime overtime)
+    private async Task HandleSaveOperationEvent(Sanction item)
     {
       
-        var result = await overtimeService.UpdateAsync(overtime, Constants.OvertimeBaseUrl);
+        var result = await sanctionService.UpdateAsync(item, Constants.SanctionBaseUrl);
         bool successCheck = await DisplayMessage(result.Flag, result.Message!);
         if(successCheck)
         {
-            Overtime = new();
-            await GetOvertimes();
+            Sanction = new();
+            await GetSanctions();
         }
     }
 
-     private void EditClicked(Overtime overtime)
+     private void EditClicked(Sanction item)
      {
-        Overtime = overtime;
+        Sanction = item;
         OpenDialog();
      }
 
-     private async Task DeleteClicked(Overtime item)
+     private async Task DeleteClicked(Sanction item)
      {
         bool confirm = await dialogService.ConfirmAsync($"Are you sure you wanna delete this?", "Confirm Delete");
         if(!confirm) return;
-        var response = await overtimeService.DeleteAsync(item.EmployeeId, Constants.OvertimeBaseUrl);
+        var response = await sanctionService.DeleteAsync(item.EmployeeId, Constants.SanctionBaseUrl);
         var result = await DisplayMessage(response.Flag, response.Message!);
         if(result)
-            await GetOvertimes();
+            await GetSanctions();
      }
-    public void OpenDialog() => overtimeDialog!.OpenDialog();
+    public void OpenDialog() => sanctionDialog!.OpenDialog();
     private async Task<bool> DisplayMessage(bool flag, string message)
     {
         if(flag)
